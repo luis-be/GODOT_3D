@@ -26,10 +26,17 @@ func _physics_process(delta: float) -> void:
 
 func move_logic(delta) -> void:
 	movement_input = Input.get_vector("left","right","forward","backward").rotated(-camera.global_rotation.y)
-	var vel_2d = Vector2(velocity.x, velocity.y)
+	var vel_2d = Vector2(velocity.x, velocity.z)
 	
 	if movement_input != Vector2.ZERO:
 		vel_2d += movement_input*base_speed*delta
+		vel_2d = vel_2d.limit_length(base_speed)
+		velocity.x = vel_2d.x
+		velocity.z = vel_2d.y
+	else:
+		vel_2d = vel_2d.move_toward(Vector2.ZERO, base_speed* 4.0 * delta)
+		velocity.x = vel_2d.x
+		velocity.z = vel_2d.y
 	
 func jump_logic(delta) -> void:
 	if is_on_floor():
